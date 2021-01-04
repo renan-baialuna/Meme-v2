@@ -16,6 +16,9 @@ class ViewController: UIViewController {
     
     var activeTextField: UITextField?
 
+    
+    // MARK: lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -24,10 +27,17 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setUpUI()
-        
+        subscribeToKeyboardNotification()
         self.topTextField.delegate = self
         self.bottonTextField.delegate = self
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unsubscribeToKeyboardNotification()
+    }
+    
+    // MARK:initial UI setup
     
     func setUpUI() {
         let paragraph = NSMutableParagraphStyle()
@@ -47,6 +57,8 @@ class ViewController: UIViewController {
         self.bottonTextField.defaultTextAttributes = memeTextAttributes
     }
 
+// MARK: buttons actions
+    
     @IBAction func takePickture() {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -59,7 +71,45 @@ class ViewController: UIViewController {
         imagePicker.sourceType = .photoLibrary
         present(imagePicker, animated: true, completion: nil)
     }
+    
+// MARK: keyboar behavior
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        if let active = self.activeTextField {
+            let botton = active.frame.origin.y + active.frame.height
+            if botton > getKeyboardHeight(notification) {
+                view.frame.origin.y = -getKeyboardHeight(notification)
+            }
+        }
+        
+    }
+    
+    @objc func keyboardWillDisapear(_ notification: Notification) {
+        view.frame.origin.y = 0
+    }
+    
+    func getKeyboardHeight(_ notification: Notification) -> CGFloat {
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
+        return keyboardSize.cgRectValue.height
+    }
+    
+    func subscribeToKeyboardNotification() {
+        NotificationCenter.default.addObserver(self,
+                                            selector: #selector(keyboardWillShow(_:)),
+                                            name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillDisapear(_:)),
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    func unsubscribeToKeyboardNotification() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
 }
+
+// MARK: text field delegate
 
 extension ViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -72,6 +122,8 @@ extension ViewController: UITextFieldDelegate {
         return true
     }
 }
+
+// MARK: image picker delegates
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
