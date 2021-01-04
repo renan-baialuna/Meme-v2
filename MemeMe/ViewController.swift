@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     @IBOutlet var cameraButton: UIBarButtonItem!
     @IBOutlet var topTextField: UITextField!
     @IBOutlet var bottonTextField: UITextField!
+    
+    var activeTextField: UITextField?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +24,9 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setUpUI()
+        
+        self.topTextField.delegate = self
+        self.bottonTextField.delegate = self
     }
     
     func setUpUI() {
@@ -43,11 +48,41 @@ class ViewController: UIViewController {
     }
 
     @IBAction func takePickture() {
-        print("pickture")
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        present(imagePicker, animated: true, completion: nil)
     }
     
     @IBAction func pickFromAlbum() {
-        print("album")
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true, completion: nil)
+    }
+}
+
+extension ViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.activeTextField = textField
+        textField.text = ""
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
+extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[.originalImage] as? UIImage {
+            self.displayImage.image = image
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
 }
 
