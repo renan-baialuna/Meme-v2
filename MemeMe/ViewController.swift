@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        shareButton.isEnabled = false
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -33,8 +33,6 @@ class ViewController: UIViewController {
         subscribeToKeyboardNotification()
         self.topTextField.delegate = self
         self.bottonTextField.delegate = self
-        
-        shareButton.isEnabled = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -67,6 +65,7 @@ class ViewController: UIViewController {
     @IBAction func takePickture() {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
+        imagePicker.sourceType = .camera
         present(imagePicker, animated: true, completion: nil)
     }
     
