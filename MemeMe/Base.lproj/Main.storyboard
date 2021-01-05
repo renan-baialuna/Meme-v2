@@ -71,13 +71,18 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="3HL-R5-geV">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="square.and.arrow.up" catalog="system" id="Os6-b4-x9w"/>
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="xmark.circle.fill" catalog="system" id="EvI-bQ-hhp"/>
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="square.and.arrow.up" catalog="system" id="Os6-b4-x9w">
+                            <connections>
+                                <action selector="share" destination="BYZ-38-t0r" id="yo4-qq-7eC"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="bottonTextField" destination="ovB-5t-3o5" id="QDs-So-Rq8"/>
                         <outlet property="cameraButton" destination="afT-sn-L15" id="V6x-eP-afP"/>
                         <outlet property="displayImage" destination="YiC-Si-Z5g" id="LPA-gb-poF"/>
+                        <outlet property="shareButton" destination="Os6-b4-x9w" id="oPF-gt-EFe"/>
+                        <outlet property="toolBar" destination="YUY-JM-YLC" id="rM9-2t-8FN"/>
                         <outlet property="topTextField" destination="DEa-jB-ztf" id="1wI-QR-IDk"/>
                     </connections>
                 </viewController>
@@ -109,6 +114,5 @@
         <image name="camera" catalog="system" width="128" height="94"/>
         <image name="photo.on.rectangle.angled" catalog="system" width="128" height="101"/>
         <image name="square.and.arrow.up" catalog="system" width="115" height="128"/>
-        <image name="xmark.circle.fill" catalog="system" width="128" height="121"/>
     </resources>
 </document>

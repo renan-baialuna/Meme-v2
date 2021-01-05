@@ -13,11 +13,14 @@ class ViewController: UIViewController {
     @IBOutlet var cameraButton: UIBarButtonItem!
     @IBOutlet var topTextField: UITextField!
     @IBOutlet var bottonTextField: UITextField!
+    @IBOutlet weak var toolBar: UIToolbar!
+    @IBOutlet var shareButton: UIBarButtonItem!
     
     var activeTextField: UITextField?
+    var memedImage: UIImage?
 
     
-    // MARK: lifecycle
+// MARK: lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +33,8 @@ class ViewController: UIViewController {
         subscribeToKeyboardNotification()
         self.topTextField.delegate = self
         self.bottonTextField.delegate = self
+        
+        shareButton.isEnabled = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -37,7 +42,7 @@ class ViewController: UIViewController {
         unsubscribeToKeyboardNotification()
     }
     
-    // MARK:initial UI setup
+// MARK:initial UI setup
     
     func setUpUI() {
         let paragraph = NSMutableParagraphStyle()
@@ -72,7 +77,35 @@ class ViewController: UIViewController {
         present(imagePicker, animated: true, completion: nil)
     }
     
-// MARK: keyboar behavior
+    @IBAction func share() {
+        let memedImage = generateMemedImage()
+        self.memedImage = memedImage
+        let ac = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
+        present(ac, animated: true, completion: nil)
+        
+        ac.completionWithItemsHandler = { (activityType: UIActivity.ActivityType?, completed:
+                                            Bool, arrayReturnedItems: [Any]?, error: Error?) in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                if completed {
+                    self.save()
+                } else {
+                    print("cancel")
+                }
+            }
+        }
+    }
+    
+// MARK: Save function
+    
+    func save() {
+        if let topText = self.topTextField.text, let bottonText = self.bottonTextField.text, let original = displayImage.image, let meme = self.memedImage {
+            let meme = Meme(topText: topText, bottonText: bottonText, originalImage: original, memedImage: meme)
+        }
+    }
+    
+// MARK: keyboard behavior
     
     @objc func keyboardWillShow(_ notification: Notification) {
         if let active = self.activeTextField {
@@ -107,6 +140,25 @@ class ViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+    
+// MARK: Generate image for sharing
+    
+    func generateMemedImage() -> UIImage {
+
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        toolBar.isHidden = true
+
+        UIGraphicsBeginImageContext(self.view.frame.size)
+        view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
+        let memedImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        toolBar.isHidden = false
+
+        return memedImage
+    }
+    
 }
 
 // MARK: text field delegate
@@ -129,6 +181,12 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.originalImage] as? UIImage {
             self.displayImage.image = image
+            if self.displayImage.image != nil {
+                shareButton.isEnabled = true
+            } else {
+                shareButton.isEnabled = false
+            }
+            
         }
         dismiss(animated: true, completion: nil)
     }
