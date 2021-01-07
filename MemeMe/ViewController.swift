@@ -25,6 +25,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         shareButton.isEnabled = false
+        cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -63,18 +64,20 @@ class ViewController: UIViewController {
 // MARK: buttons actions
     
     @IBAction func takePickture() {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = .camera
-        present(imagePicker, animated: true, completion: nil)
+        pickImageSource(source: .camera)
     }
     
     @IBAction func pickFromAlbum() {
+        pickImageSource(source: .photoLibrary)
+    }
+    
+    func pickImageSource(source: UIImagePickerController.SourceType) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
-        imagePicker.sourceType = .photoLibrary
+        imagePicker.sourceType = source
         present(imagePicker, animated: true, completion: nil)
     }
+
     
     @IBAction func share() {
         let memedImage = generateMemedImage()
