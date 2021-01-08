@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController {
     
@@ -25,7 +26,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         shareButton.isEnabled = false
-        cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -34,6 +34,7 @@ class ViewController: UIViewController {
         subscribeToKeyboardNotification()
         self.topTextField.delegate = self
         self.bottonTextField.delegate = self
+        cameraButton.isEnabled = isCameraAvailable()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -41,7 +42,24 @@ class ViewController: UIViewController {
         unsubscribeToKeyboardNotification()
     }
     
-// MARK:initial UI setup
+// MARK: Access functions
+    
+    func isCameraAvailable() -> Bool {
+        if !UIImagePickerController.isSourceTypeAvailable(.camera) {
+            createAlert(titleAlert: "Camera not Available", subTitleAlert: "Unable to find camera")
+            return false
+        } else {
+            let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+            if cameraAuthorizationStatus == .authorized || cameraAuthorizationStatus == .notDetermined {
+                return true
+            } else {
+                createAlert(titleAlert: "Camera not Authorised", subTitleAlert: "Unable to access camera due to access privileges not met")
+                return false
+            }
+        }
+    }
+    
+// MARK: UI functions
     
     func setUpUI() {
         let paragraph = NSMutableParagraphStyle()
@@ -59,6 +77,12 @@ class ViewController: UIViewController {
         self.bottonTextField.backgroundColor = UIColor.clear
         self.topTextField.defaultTextAttributes = memeTextAttributes
         self.bottonTextField.defaultTextAttributes = memeTextAttributes
+    }
+    
+    func createAlert(titleAlert: String, subTitleAlert: String) {
+        let alert = UIAlertController(title: titleAlert, message: subTitleAlert, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 
 // MARK: buttons actions
