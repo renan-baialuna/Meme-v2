@@ -10,6 +10,8 @@ import AVFoundation
 
 class ViewController: UIViewController {
     
+    // version 2.0
+    
     @IBOutlet var displayImage: UIImageView!
     @IBOutlet var cameraButton: UIBarButtonItem!
     @IBOutlet var topTextField: UITextField!
