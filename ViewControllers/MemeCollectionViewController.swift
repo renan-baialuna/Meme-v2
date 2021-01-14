@@ -12,6 +12,8 @@ class MemeCollectionViewController: UIViewController {
     @IBOutlet weak var memeCollection: UICollectionView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     
+// MARK: lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         memeCollection.delegate = self
@@ -23,7 +25,6 @@ class MemeCollectionViewController: UIViewController {
         flowLayout.minimumInteritemSpacing = space
         flowLayout.minimumLineSpacing = space
         flowLayout.itemSize = CGSize(width: dimension, height: dimension)
-        // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,9 +33,10 @@ class MemeCollectionViewController: UIViewController {
         memes = appDelegate.memes
         
         memeCollection.reloadData()
-        
     }
 }
+
+// MARK: collection control
 
 extension MemeCollectionViewController: UICollectionViewDataSource, UICollectionViewDelegate     {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

@@ -10,8 +10,6 @@ import AVFoundation
 
 class CreateMemeViewController: UIViewController {
     
-    // version 2.0
-    
     @IBOutlet var displayImage: UIImageView!
     @IBOutlet var cameraButton: UIBarButtonItem!
     @IBOutlet var topTextField: UITextField!
@@ -104,7 +102,6 @@ class CreateMemeViewController: UIViewController {
         present(imagePicker, animated: true, completion: nil)
     }
 
-    
     @IBAction func share() {
         let memedImage = generateMemedImage()
         self.memedImage = memedImage

@@ -11,6 +11,8 @@ class MemesTableViewController: UIViewController {
     var memes: [Meme] = []
     @IBOutlet var memesTable: UITableView!
 
+// MARK: lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         memesTable.delegate = self
@@ -25,6 +27,8 @@ class MemesTableViewController: UIViewController {
     }
 
 }
+
+// MARK: Table control
 
 extension MemesTableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
