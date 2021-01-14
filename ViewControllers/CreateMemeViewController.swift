@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-class ViewController: UIViewController {
+class CreateMemeViewController: UIViewController {
     
     // version 2.0
     
@@ -125,11 +125,19 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func cancelMeme() {
+        navigationController?.popViewController(animated: true)
+    }
+    
 // MARK: Save function
     
     func save() {
         if let topText = self.topTextField.text, let bottonText = self.bottonTextField.text, let original = displayImage.image, let meme = self.memedImage {
             let meme = Meme(topText: topText, bottonText: bottonText, originalImage: original, memedImage: meme)
+            let object = UIApplication.shared.delegate
+            let appDelegate = object as! AppDelegate
+            
+            appDelegate.memes.append(meme)
         }
     }
     
@@ -191,7 +199,7 @@ class ViewController: UIViewController {
 
 // MARK: text field delegate
 
-extension ViewController: UITextFieldDelegate {
+extension CreateMemeViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.activeTextField = textField
         textField.text = ""
@@ -205,7 +213,7 @@ extension ViewController: UITextFieldDelegate {
 
 // MARK: image picker delegates
 
-extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension CreateMemeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.originalImage] as? UIImage {
             self.displayImage.image = image
