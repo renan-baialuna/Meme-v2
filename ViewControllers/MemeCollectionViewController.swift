@@ -10,12 +10,19 @@ import UIKit
 class MemeCollectionViewController: UIViewController {
     var memes: [Meme] = []
     @IBOutlet weak var memeCollection: UICollectionView!
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         memeCollection.delegate = self
         memeCollection.dataSource = self
 
+        let space:CGFloat = 3.0
+        let dimension = (view.frame.size.width - (2 * space)) / 3.0
+
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = space
+        flowLayout.itemSize = CGSize(width: dimension, height: dimension)
         // Do any additional setup after loading the view.
     }
     
