@@ -44,5 +44,9 @@ extension MemesTableViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let controller = self.storyboard!.instantiateViewController(withIdentifier: "DetailMemeViewController") as! DetailMemeViewController
+        controller.meme = memes[indexPath.row]
+        navigationController?.pushViewController(controller, animated: true)
+    }
 }
